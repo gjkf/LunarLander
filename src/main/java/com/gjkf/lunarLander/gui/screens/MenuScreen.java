@@ -3,31 +3,28 @@
  */
 package com.gjkf.lunarLander.gui.screens;
 
+import com.gjkf.seriousEngine.SeriousEngine;
+import com.gjkf.seriousEngine.core.gui.GuiButton;
+import com.gjkf.seriousEngine.core.gui.GuiLabel;
 import com.gjkf.seriousEngine.core.gui.GuiScreenWidget;
-import com.gjkf.seriousEngine.core.math.Vector2f;
-import com.gjkf.seriousEngine.core.math.Vector4f;
 import com.gjkf.seriousEngine.core.render.Colors;
-import com.gjkf.seriousEngine.core.render.Renderer;
 import org.lwjgl.opengl.GL11;
-
-import java.util.HashMap;
 
 public class MenuScreen extends GuiScreenWidget{
 
     public MenuScreen(int width, int height){
         super(width, height);
+//        Renderer.setFont("fonts/ASO.ttf");
+        this.debug = true;
+        add(new GuiLabel(200, 250, 9f, Colors.WHITE.color, "Lunar Lander"));
+        add(new GuiButton(450, 500, "Play", 6f, () -> SeriousEngine.window.setScreen(new MainScreen(width, height))));
     }
 
     @Override
     public void drawBackground(){
-        HashMap<String, Object> m = new HashMap<>();
-        m.put("uResolution", new Vector2f(450, 350));
-        m.put("uStartingColor", new Vector4f(1f, .6f, .0f, 1f));
-        m.put("uEndingColor", new Vector4f(0f, .6f, .6f, 1f));
-        m.put("uDirection", 0);
-        Renderer.loadShader("shaders/defaultVertex.glsl", "shaders/gradient.glsl", m,
-                () -> Renderer.drawArray(new float[]{150,150, 250,420, 600,500}, Colors.GREEN.color, GL11.GL_TRIANGLES)
-        );
+        // Black background
+        GL11.glClearColor(0f, 0f, 0f, 1f);
+//        Renderer.drawText(width/2, height/2, "Lunar Lander", 20, Colors.WHITE.color);
     }
 
     @Override
