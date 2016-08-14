@@ -22,16 +22,17 @@ public class MainScreen extends GuiScreenWidget{
 
     @Override
     public void drawBackground(){
-    }
-
-    @Override
-    public void drawForeground(){
         long elapsed = System.currentTimeMillis() - this.startTime;
         int seconds = (int)Math.floor(elapsed/1000)%60;
         int minutes = (int)Math.floor(elapsed/(60*1000))%60;
         String time = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
 //        Renderer.renderFont(10, 10, "Time: " + time, 2.5f, Colors.WHITE.color);
         Renderer.drawText(10, 30, "Time: " + time, 30, Colors.WHITE.color);
+    }
+
+    @Override
+    public void drawForeground(){
+
     }
 
 }
