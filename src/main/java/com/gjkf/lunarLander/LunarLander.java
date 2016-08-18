@@ -3,7 +3,7 @@
  */
 package com.gjkf.lunarLander;
 
-import com.gjkf.lunarLander.gui.screens.MenuScreen;
+import com.gjkf.lunarLander.core.gui.screens.MenuScreen;
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.gui.Window;
 

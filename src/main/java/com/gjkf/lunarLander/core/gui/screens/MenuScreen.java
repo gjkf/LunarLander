@@ -1,7 +1,7 @@
 /*
  * Created by Davide Cossu (gjkf), 8/11/2016
  */
-package com.gjkf.lunarLander.gui.screens;
+package com.gjkf.lunarLander.core.gui.screens;
 
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.gui.GuiButton;
