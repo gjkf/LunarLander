@@ -6,6 +6,7 @@ package com.gjkf.lunarLander.gui.player;
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.controls.Keys;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
+import com.gjkf.seriousEngine.core.render.Colors;
 import com.gjkf.seriousEngine.core.render.Image;
 import com.gjkf.seriousEngine.core.render.Renderer;
 import org.lwjgl.opengl.GL11;
@@ -42,11 +43,10 @@ public class Player extends GuiWidget{
     public void draw(){
         super.draw();
         this.image = Image.loadImage("textures/lander.png");
-//        Renderer.drawImageRegion(this.image, this.x, this.y, 10, 10, 32, 32);
         System.out.println("T: " + thrust + " A: " + angle);
         GL11.glPushMatrix();
-        // TODO: See here (http://wiki.lwjgl.org/index.php?title=The_Quad_with_Projection,_View_and_Model_matrices) for shader rotation
-        Renderer.drawImageRegion(this.image, this.x, this.y, 32 * thrust, 0, 32, 32);
+        // TODO: Fix the strange stretch the thrust causes.
+        Renderer.drawImageRegion(this.image, this.x, this.y, 32 * thrust, 0, 32, 32, Colors.WHITE.color, angle);
         GL11.glPopMatrix();
     }
 
