@@ -14,6 +14,8 @@ import java.util.Random;
 
 public class Terrain extends GuiWidget{
 
+    public static final float gravity = 0.001f;
+
     private ArrayList<Vector2f> points, validPoints;
 
     private Random random;
@@ -73,7 +75,6 @@ public class Terrain extends GuiWidget{
                 c = t;
             }
         }
-//        this.isValid = true;
         /* Keep filling the array until it's done. */
         if(!this.isValid){this.generateTerrain(20);}
     }

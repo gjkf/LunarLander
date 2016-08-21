@@ -3,6 +3,7 @@
  */
 package com.gjkf.lunarLander.core.gui.player;
 
+import com.gjkf.lunarLander.core.terrain.Terrain;
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.controls.Keys;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
@@ -14,7 +15,7 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 public class Player extends GuiWidget{
 
     private Image image;
-    private int thrust = 0, angle = 0;
+    private int thrust = 0, angle = -90;
     private Vector2f velocity;
 
     public Player(int x, int y, int width, int height){
@@ -32,12 +33,13 @@ public class Player extends GuiWidget{
                 }
             }
             if(key == 262){ // LEFT arrow
-                angle++;
+                angle+=4;
             }else if(key == 263){ // RIGHT arrow
-                angle--;
+                angle-=4;
             }
         });
         velocity = new Vector2f();
+        velocity.limit(2);
     }
 
     @Override
@@ -45,13 +47,17 @@ public class Player extends GuiWidget{
         super.draw();
         this.image = Image.loadImage("textures/lander.png");
         // TODO: Fix the strange stretch the thrust causes.
-        Renderer.drawImageRegion(this.image, this.x, this.y, 32f * thrust, 0, 32f, 32f, Colors.WHITE.color, angle);
+        Renderer.drawImageRegion(this.image, this.x, this.y, 32f * thrust, 0, 32f, 32f, Colors.WHITE.color, 90+angle);
     }
 
     @Override
     public void update(){
         super.update();
-        this.velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/250f, (float)Math.sin(Math.toRadians(angle)) * thrust/250f));
-        System.out.println(String.format("%f, %f", velocity.x, velocity.y));
+        this.velocity.add(new Vector2f(0, Terrain.gravity));
+        this.velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        System.out.println(String.format("%f, %f, %d, %d", velocity.x, velocity.y, this.x, this.y));
+
     }
 }

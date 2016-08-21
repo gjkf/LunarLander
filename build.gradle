@@ -17,6 +17,8 @@ sourceSets{
 
 project.ext.lwjglVersion = "3.0.0a"
 
+mainClassName = "com.gjkf.lunarLander.LunarLander"
+
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -32,6 +34,16 @@ dependencies {
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
     compile fileTree(dir: "lib/", include: "*.jar")
+}
+
+jar{
+    manifest{
+        attributes(
+                "Main-Class": mainClassName,
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version
+        )
+    }
 }
 
 // add source jar
