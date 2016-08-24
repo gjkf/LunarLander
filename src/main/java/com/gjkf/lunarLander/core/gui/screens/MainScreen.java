@@ -18,7 +18,7 @@ public class MainScreen extends GuiScreenWidget{
     public MainScreen(float width, float height){
         super(width, height);
         this.startTime = System.currentTimeMillis();
-        player = new Player(100, 100, 32, 32);
+        player = new Player(100, 600, 32, 32);
         terrain = new Terrain(0, 900, width, height-800);
         terrain.generateTerrain(20);
         add(player);
@@ -39,4 +39,9 @@ public class MainScreen extends GuiScreenWidget{
 
     }
 
+    @Override
+    public void update(){
+        super.update();
+        System.out.println(this.terrain.checkCollision(this.player));
+    }
 }

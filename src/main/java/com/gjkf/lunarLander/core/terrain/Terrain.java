@@ -3,6 +3,7 @@
  */
 package com.gjkf.lunarLander.core.terrain;
 
+import com.gjkf.lunarLander.core.gui.player.Player;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
 import com.gjkf.seriousEngine.core.math.Vector2f;
 import com.gjkf.seriousEngine.core.render.Colors;
@@ -50,7 +51,7 @@ public class Terrain extends GuiWidget{
      * Checks if the generated terrain has at least 1 valid landing spot.
      */
 
-    public void checkForValidity(){
+    private void checkForValidity(){
         /* Place holder */
         ArrayList<Vector2f> c = new ArrayList<>();
         for(Vector2f point : this.points){
@@ -77,6 +78,33 @@ public class Terrain extends GuiWidget{
         }
         /* Keep filling the array until it's done. */
         if(!this.isValid){this.generateTerrain(20);}
+    }
+
+    /**
+     * Checks the collision between the given player and the terrain
+     *
+     * @param player The player to check
+     *
+     * @return TRUE if the player collided
+     */
+
+    public boolean checkCollision(Player player){
+        final boolean[] ret = {false};
+        points.stream().filter(point -> point.x > player.x && point.x < player.x + player.width)
+                .filter(point -> point.y <= player.y + player.height)
+                .forEach(point -> {
+                    /* Maybe is a valid point */
+                    validPoints.stream().filter(validPoint -> point.x == validPoint.x && point.y == validPoint.y)
+                            .filter(validPoint -> (player.getAngle() % 360 >= -82 && player.getAngle() % 360 <= -98 )|| (player.getAngle() % 360 >= 262 && player.getAngle() % 360 <= 278))
+                            .filter(validPoint -> -player.getVelocity().y <= gravity * 10)
+                            .forEach(validPoint ->{
+                                System.err.println("LANDED");
+                                ret[0] = true;
+                            });
+                    ret[0] = false;
+                    System.err.println("NOT LANDED");
+        });
+        return ret[0];
     }
 
     @Override

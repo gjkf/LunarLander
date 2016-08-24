@@ -40,6 +40,15 @@ public class Player extends GuiWidget{
         });
         velocity = new Vector2f();
         velocity.limit(2);
+        velocity.add(new Vector2f(0, 1));
+    }
+
+    public int getAngle(){
+        return angle;
+    }
+
+    public Vector2f getVelocity(){
+        return velocity;
     }
 
     @Override
@@ -55,10 +64,9 @@ public class Player extends GuiWidget{
         super.update();
         this.velocity.add(new Vector2f(0, Terrain.gravity));
         this.velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
-        this.velocity.scale(2f);
+//        this.velocity.scale(2f);
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        System.out.println(String.format("%f, %f, %f, %f", velocity.x, velocity.y, this.x, this.y));
-
+//        System.out.println(String.format("%f, %f, %f, %f", velocity.x, velocity.y, this.x, this.y));
     }
 }
