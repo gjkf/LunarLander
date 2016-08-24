@@ -18,7 +18,7 @@ public class Player extends GuiWidget{
     private int thrust = 0, angle = -90;
     private Vector2f velocity;
 
-    public Player(int x, int y, int width, int height){
+    public Player(float x, float y, float width, float height){
         super(x, y, width, height, null);
         Keys.registerKeys(SeriousEngine.window.window,(long w, int key, int code, int action, int mods) -> {
             if(code == 1){
@@ -45,9 +45,9 @@ public class Player extends GuiWidget{
     @Override
     public void draw(){
         super.draw();
-        this.image = Image.loadImage("textures/lander.png");
-        // TODO: Fix the strange stretch the thrust causes.
-        Renderer.drawImageRegion(this.image, this.x, this.y, 32f * thrust, 0, 32f, 32f, Colors.WHITE.color, 90+angle);
+        this.image = Image.loadImage("textures/lander" + thrust + ".png");
+        // The rendering problem comes from the engine.
+        Renderer.drawImageRegion(this.image, this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
     }
 
     @Override
@@ -55,9 +55,10 @@ public class Player extends GuiWidget{
         super.update();
         this.velocity.add(new Vector2f(0, Terrain.gravity));
         this.velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
+        this.velocity.scale(2f);
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        System.out.println(String.format("%f, %f, %d, %d", velocity.x, velocity.y, this.x, this.y));
+        System.out.println(String.format("%f, %f, %f, %f", velocity.x, velocity.y, this.x, this.y));
 
     }
 }

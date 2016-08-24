@@ -22,7 +22,7 @@ public class Terrain extends GuiWidget{
 
     private boolean isValid;
 
-    public Terrain(int x, int y, int width, int height){
+    public Terrain(float x, float y, float width, float height){
         super(x, y, width, height, null);
         random = new Random();
     }
@@ -37,10 +37,10 @@ public class Terrain extends GuiWidget{
         this.validPoints = new ArrayList<>();
         this.points = new ArrayList<>();
 
-        for(int x = this.x; x < this.width+incr*3; x += incr){
-            float h = random.nextInt((this.y - 800) + 1) + 800;
+        for(int x = (int)this.x; x < this.width+incr*3; x += incr){
+            float h = random.nextInt((int) ((this.y - 800) + 1)) + 800;
             float noise = (float) (random.nextGaussian() * 0.1f);
-            int y = (int) Math.round(h+noise*Math.sin(x)*200);
+            int y = (int) Math.round(h+noise*Math.sin(x)*100);
             points.add(new Vector2f(x, y));
         }
         this.checkForValidity();

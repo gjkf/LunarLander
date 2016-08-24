@@ -12,7 +12,7 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 
 public class MenuScreen extends GuiScreenWidget{
 
-    public MenuScreen(int width, int height){
+    public MenuScreen(float width, float height){
         super(width, height);
         Renderer.setFont("fonts/ASO.ttf");
         add(new GuiLabel(290, 250, 60f, Colors.WHITE.color, "Lunar Lander"));

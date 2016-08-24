@@ -15,7 +15,7 @@ public class MainScreen extends GuiScreenWidget{
     private Player player;
     private Terrain terrain;
 
-    public MainScreen(int width, int height){
+    public MainScreen(float width, float height){
         super(width, height);
         this.startTime = System.currentTimeMillis();
         player = new Player(100, 100, 32, 32);
