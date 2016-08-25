@@ -15,32 +15,48 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 public class Player extends GuiWidget{
 
     private Image image;
-    private int thrust = 0, angle = -90;
     private Vector2f velocity;
+    private int thrust = 0, angle = -90;
+    private float fuel  = 2500f;
 
     public Player(float x, float y, float width, float height){
         super(x, y, width, height, null);
         Keys.registerKeys(SeriousEngine.window.window,(long w, int key, int code, int action, int mods) -> {
             if(code == 1){
                 if(key == 265){ // UP arrow
-                    if(thrust < 3){
-                        thrust++;
-                    }
+                    addThrust();
                 }else if(key == 264){ // DOWN arrow
-                    if(thrust > 0){
-                        thrust--;
-                    }
+                    removeThrust();
                 }
             }
             if(key == 262){ // LEFT arrow
-                angle+=4;
+                rotateLeft();
             }else if(key == 263){ // RIGHT arrow
-                angle-=4;
+                rotateRight();
             }
         });
         velocity = new Vector2f();
         velocity.limit(2);
-        velocity.add(new Vector2f(0, 1));
+    }
+
+    public float getFuel(){
+        return fuel;
+    }
+
+    public void addThrust(){
+        thrust = this.thrust < 3 ? thrust+=1 : thrust;
+    }
+
+    public void removeThrust(){
+        thrust = this.thrust > 0 ? thrust-=1 : thrust;
+    }
+
+    public void rotateRight(){
+        angle-=4;
+    }
+
+    public void rotateLeft(){
+        angle+=4;
     }
 
     public int getAngle(){
@@ -54,19 +70,18 @@ public class Player extends GuiWidget{
     @Override
     public void draw(){
         super.draw();
-        this.image = Image.loadImage("textures/lander" + thrust + ".png");
-        // The rendering problem comes from the engine.
+        image = Image.loadImage("textures/lander" + thrust + ".png");
         Renderer.drawImageRegion(this.image, this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
     }
 
     @Override
     public void update(){
         super.update();
-        this.velocity.add(new Vector2f(0, Terrain.gravity));
-        this.velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
-//        this.velocity.scale(2f);
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-//        System.out.println(String.format("%f, %f, %f, %f", velocity.x, velocity.y, this.x, this.y));
+        velocity.add(new Vector2f(0, Terrain.gravity));
+        velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
+        x += velocity.x;
+        y += velocity.y;
+        fuel -= thrust/2f + (System.currentTimeMillis() % 15 == 0 ? 1 : 0);
+        System.out.println(String.format("%f, %f, %f, %f, %f", velocity.x, velocity.y, x, y, fuel));
     }
 }

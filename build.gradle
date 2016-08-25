@@ -1,10 +1,10 @@
 group 'com.gjkf'
-version '0.1'
+version '0.2'
 
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceSets{
+sourceSets {
     main {
         java {
             srcDir 'src/test/java'
@@ -15,7 +15,9 @@ sourceSets{
     }
 }
 
-project.ext.lwjglVersion = "3.0.0a"
+applicationDistribution.exclude("libraries/*")
+
+def lwjglVersion = "3.0.0a"
 
 mainClassName = "com.gjkf.lunarLander.LunarLander"
 
@@ -25,7 +27,7 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '3.0'
 }
 
 dependencies {
@@ -33,7 +35,15 @@ dependencies {
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
-    compile fileTree(dir: "lib/", include: "*.jar")
+    /* Include all the jars */
+    def allJars = fileTree(dir: 'libraries/', include: '*.jar')
+    /* Include just the deobfuscated ones */
+    def dJars = fileTree(dir: 'libraries/', include: '*-deobf.jar')
+    /* Include just the source ones */
+    def sJars = fileTree(dir: 'libraries/', include: '*-source.jar')
+    /* Get the jars that are not deobf or source */
+    def jarsToUse = allJars - dJars - sJars
+    compile jarsToUse
 }
 
 jar{

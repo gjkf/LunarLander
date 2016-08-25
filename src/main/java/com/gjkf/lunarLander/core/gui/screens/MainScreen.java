@@ -14,10 +14,11 @@ public class MainScreen extends GuiScreenWidget{
     private long startTime;
     private Player player;
     private Terrain terrain;
+    private int state = 0; // 0 = in game; 1 = win; -1 = loss
 
     public MainScreen(float width, float height){
         super(width, height);
-        this.startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         player = new Player(100, 600, 32, 32);
         terrain = new Terrain(0, 900, width, height-800);
         terrain.generateTerrain(20);
@@ -27,11 +28,12 @@ public class MainScreen extends GuiScreenWidget{
 
     @Override
     public void drawBackground(){
-        long elapsed = System.currentTimeMillis() - this.startTime;
+        long elapsed = System.currentTimeMillis() - startTime;
         int seconds = (int)Math.floor(elapsed/1000)%60;
         int minutes = (int)Math.floor(elapsed/(60*1000))%60;
         String time = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
         Renderer.drawText(10, 30, "Time: " + time, 30, Colors.WHITE.color);
+        Renderer.drawText(10, 70, "Fuel: " + player.getFuel(), 30, Colors.WHITE.color);
     }
 
     @Override
@@ -42,6 +44,14 @@ public class MainScreen extends GuiScreenWidget{
     @Override
     public void update(){
         super.update();
-        System.out.println(this.terrain.checkCollision(this.player));
+        terrain.checkCollision(player);
+    }
+
+    public int getState(){
+        return state;
+    }
+
+    public void setState(int state){
+        this.state = state;
     }
 }

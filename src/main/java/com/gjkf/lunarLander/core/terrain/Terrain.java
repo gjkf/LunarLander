@@ -4,6 +4,7 @@
 package com.gjkf.lunarLander.core.terrain;
 
 import com.gjkf.lunarLander.core.gui.player.Player;
+import com.gjkf.lunarLander.core.gui.screens.MainScreen;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
 import com.gjkf.seriousEngine.core.math.Vector2f;
 import com.gjkf.seriousEngine.core.render.Colors;
@@ -35,8 +36,8 @@ public class Terrain extends GuiWidget{
      */
 
     public void generateTerrain(int incr){
-        this.validPoints = new ArrayList<>();
-        this.points = new ArrayList<>();
+        validPoints = new ArrayList<>();
+        points = new ArrayList<>();
 
         for(int x = (int)this.x; x < this.width+incr*3; x += incr){
             float h = random.nextInt((int) ((this.y - 800) + 1)) + 800;
@@ -44,7 +45,7 @@ public class Terrain extends GuiWidget{
             int y = (int) Math.round(h+noise*Math.sin(x)*100);
             points.add(new Vector2f(x, y));
         }
-        this.checkForValidity();
+        checkForValidity();
     }
 
     /**
@@ -65,9 +66,9 @@ public class Terrain extends GuiWidget{
             if(c.get(0).y == c.get(1).y){
                 if(c.get(0).x >= 30 && c.get(0).x <= width - 30){
                     if(c.get(1).x >= 30 && c.get(1).x <= width - 30){
-                        this.validPoints.add(c.get(0));
-                        this.validPoints.add(c.get(1));
-                        this.isValid = true;
+                        validPoints.add(c.get(0));
+                        validPoints.add(c.get(1));
+                        isValid = true;
                     }
                 }
             }else{
@@ -77,7 +78,7 @@ public class Terrain extends GuiWidget{
             }
         }
         /* Keep filling the array until it's done. */
-        if(!this.isValid){this.generateTerrain(20);}
+        if(!isValid){generateTerrain(20);}
     }
 
     /**
@@ -99,11 +100,13 @@ public class Terrain extends GuiWidget{
                             .filter(validPoint -> -player.getVelocity().y <= gravity * 10)
                             .forEach(validPoint ->{
                                 System.err.println("LANDED");
+                                ((MainScreen)player.getParent()).setState(1);
                                 ret[0] = true;
                             });
-                    ret[0] = false;
                     System.err.println("NOT LANDED");
-        });
+                    ((MainScreen)player.getParent()).setState(-1);
+                    ret[0] = false;
+                });
         return ret[0];
     }
 
