@@ -3,6 +3,7 @@
  */
 package com.gjkf.lunarLander.core.gui.player;
 
+import com.gjkf.lunarLander.core.gui.screens.MainScreen;
 import com.gjkf.lunarLander.core.terrain.Terrain;
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.controls.Keys;
@@ -14,9 +15,21 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 
 public class Player extends GuiWidget{
 
-    private Image image;
+    /**
+     * Vector representing the velocity of the spaceship
+     */
     private Vector2f velocity;
-    private int thrust = 0, angle = -90;
+    /**
+     * The spaceship thrust
+     */
+    private int thrust = 0;
+    /**
+     * The spaceship rotation angle
+     */
+    private int angle = -90;
+    /**
+     * The spaceship current fuel level
+     */
     private float fuel  = 2500f;
 
     public Player(float x, float y, float width, float height){
@@ -70,18 +83,19 @@ public class Player extends GuiWidget{
     @Override
     public void draw(){
         super.draw();
-        image = Image.loadImage("textures/lander" + thrust + ".png");
-        Renderer.drawImageRegion(this.image, this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
+        Renderer.drawImageRegion(Image.loadImage("textures/lander" + thrust + ".png"), this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
     }
 
     @Override
     public void update(){
         super.update();
-        velocity.add(new Vector2f(0, Terrain.gravity));
-        velocity.add(new Vector2f((float)Math.cos(Math.toRadians(angle)) * thrust/125f, (float)Math.sin(Math.toRadians(angle)) * thrust/125f));
-        x += velocity.x;
-        y += velocity.y;
-        fuel -= thrust/2f + (System.currentTimeMillis() % 15 == 0 ? 1 : 0);
-        System.out.println(String.format("%f, %f, %f, %f, %f", velocity.x, velocity.y, x, y, fuel));
+        if(((MainScreen)this.getParent()).getState() == 0){
+            velocity.add(new Vector2f(0, Terrain.gravity));
+            velocity.add(new Vector2f((float) Math.cos(Math.toRadians(angle)) * thrust / 125f, (float) Math.sin(Math.toRadians(angle)) * thrust / 125f));
+            x += velocity.x;
+            y += velocity.y;
+            fuel -= thrust / 2f + (System.currentTimeMillis() % 15 == 0 ? 1 : 0);
+            System.out.println(String.format("%f, %f, %f, %f, %f", velocity.x, velocity.y, x, y, fuel));
+        }
     }
 }

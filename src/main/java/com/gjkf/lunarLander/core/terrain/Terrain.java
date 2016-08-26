@@ -14,14 +14,28 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Object representing the lunar terrain.
+ * <p>Uses Gaussian random number generation from {@link Random#nextGaussian()}</p>
+ */
+
 public class Terrain extends GuiWidget{
 
+    /**
+     * Gravity factor to apply to all entities
+     */
     public static final float gravity = 0.001f;
-
+    /**
+     * Vector representing the terrain
+     */
     private ArrayList<Vector2f> points, validPoints;
-
+    /**
+     * Random object used to create the terrain
+     */
     private Random random;
-
+    /**
+     * Whether or not the current terrain is suitable for a game
+     */
     private boolean isValid;
 
     public Terrain(float x, float y, float width, float height){
@@ -49,7 +63,10 @@ public class Terrain extends GuiWidget{
     }
 
     /**
-     * Checks if the generated terrain has at least 1 valid landing spot.
+     * Checks if the generated terrain has at least 1 valid landing spot
+     * <p>In case it's missing one it will regenerate the terrain<p/>
+     *
+     * @see #generateTerrain(int)
      */
 
     private void checkForValidity(){
