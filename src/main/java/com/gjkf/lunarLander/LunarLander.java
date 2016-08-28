@@ -3,20 +3,61 @@
  */
 package com.gjkf.lunarLander;
 
-import com.gjkf.lunarLander.core.gui.screens.MenuScreen;
-import com.gjkf.seriousEngine.SeriousEngine;
-import com.gjkf.seriousEngine.core.gui.Window;
+import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
+import com.gjkf.lunarLander.core.train.NeuralPilot;
+import com.gjkf.lunarLander.core.train.PilotScore;
+import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.ml.genetic.MLMethodGeneticAlgorithm;
+import org.encog.ml.train.MLTrain;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.pattern.FeedForwardPattern;
 
 public class LunarLander{
 
+    private static BasicNetwork createNetwork(){
+        FeedForwardPattern pattern = new FeedForwardPattern();
+        pattern.setInputNeurons(3);
+        pattern.addHiddenLayer(50);
+        pattern.setOutputNeurons(1);
+        pattern.setActivationFunction(new ActivationTANH());
+        BasicNetwork network = (BasicNetwork)pattern.generate();
+        network.reset();
+        return network;
+    }
+
     public static void main(String... args){
-        SeriousEngine engine = new SeriousEngine();
+//        SeriousEngine engine = new SeriousEngine();
+//
+//        Window w = new Window(1000, 1000, "Lunar Lander");
+//        w.setScreen(new MenuScreen(1000, 1000));
+//
+//        engine.setWindow(w);
+//        engine.run();
 
-        Window w = new Window(1000, 1000, "Lunar Lander");
-        w.setScreen(new MenuScreen(1000, 1000));
+        new TrainScreen(1000, 1000);
+        BasicNetwork network;
 
-        engine.setWindow(w);
-        engine.run();
+        MLTrain train = new MLMethodGeneticAlgorithm(() -> {
+            final BasicNetwork result = createNetwork();
+            result.reset();
+            return result;
+        },new PilotScore(),50);
+
+        int epoch = 1;
+
+        for(int i = 0; i < 50; i++) {
+            train.iteration();
+            System.out.println("Epoch #" + epoch + " Score:" + train.getError());
+            epoch++;
+        }
+        train.finishTraining();
+
+        System.out.println("\nHow the winning network landed:");
+        network = (BasicNetwork)train.getMethod();
+        NeuralPilot pilot = new NeuralPilot(network);
+        System.out.println(pilot.scorePilot());
+        Encog.getInstance().shutdown();
     }
 
 }

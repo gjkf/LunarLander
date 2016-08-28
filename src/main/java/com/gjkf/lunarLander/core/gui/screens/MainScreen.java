@@ -31,16 +31,16 @@ public class MainScreen extends GuiScreenWidget{
     /**
      * Current terrain object
      */
-    private Terrain terrain;
+    public Terrain terrain;
 
     public MainScreen(float width, float height){
         super(width, height);
         startTime = System.currentTimeMillis();
-        player = new Player(100, 600, 32, 32);
         terrain = new Terrain(0, 900, width, height-800);
+        player = new Player(100, 600, 32, 32, terrain, false);
         terrain.generateTerrain(20);
-        add(player);
         add(terrain);
+        add(player);
     }
 
     @Override
@@ -73,6 +73,7 @@ public class MainScreen extends GuiScreenWidget{
     public void update(){
         super.update();
         terrain.checkCollision(player);
+        System.out.println(terrain.getPlayerAltitude(player));
     }
 
     public int getState(){

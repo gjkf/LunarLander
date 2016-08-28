@@ -24,7 +24,7 @@ public class Terrain extends GuiWidget{
     /**
      * Gravity factor to apply to all entities
      */
-    public static final float gravity = 0.001f;
+    public static final float GRAVITY = 0.009f;
     /**
      * Vector representing the terrain
      */
@@ -114,7 +114,7 @@ public class Terrain extends GuiWidget{
                     /* Maybe is a valid point */
                     validPoints.stream().filter(validPoint -> point.x == validPoint.x && point.y == validPoint.y)
                             .filter(validPoint -> (player.getAngle() % 360 >= -82 && player.getAngle() % 360 <= -98 )|| (player.getAngle() % 360 >= 262 && player.getAngle() % 360 <= 278))
-                            .filter(validPoint -> -player.getVelocity().y <= gravity * 10)
+                            .filter(validPoint -> -player.getVelocity().y <= GRAVITY * 10)
                             .forEach(validPoint ->{
                                 System.err.println("LANDED");
                                 ((MainScreen)player.getParent()).setState(1);
@@ -125,6 +125,21 @@ public class Terrain extends GuiWidget{
                     ret[0] = false;
                 });
         return ret[0];
+    }
+
+    /**
+     * Returns the shortest distance of every point which x coordinate
+     * are inside the player model
+     *
+     * @param player The player to check
+     *
+     * @return The shortest height
+     */
+
+    public float getPlayerAltitude(Player player){
+        final float[] f = new float[1];
+        points.stream().filter(p -> p.x >= player.x && p.x <= player.x + player.width).forEach(p -> f[0] = Math.max(f[0], p.y - player.y));
+        return f[0];
     }
 
     @Override

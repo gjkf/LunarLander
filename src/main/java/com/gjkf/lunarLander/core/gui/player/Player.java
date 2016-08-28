@@ -16,6 +16,10 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 public class Player extends GuiWidget{
 
     /**
+     * The terrain object
+     */
+    public Terrain terrain;
+    /**
      * Vector representing the velocity of the spaceship
      */
     private Vector2f velocity;
@@ -31,25 +35,33 @@ public class Player extends GuiWidget{
      * The spaceship current fuel level
      */
     private float fuel  = 2500f;
+    /**
+     * Whether or not this object is used to train a network
+     */
+    private boolean train;
 
-    public Player(float x, float y, float width, float height){
+    public Player(float x, float y, float width, float height, Terrain terrain, boolean training){
         super(x, y, width, height, null);
-        Keys.registerKeys(SeriousEngine.window.window,(long w, int key, int code, int action, int mods) -> {
-            if(code == 1){
-                if(key == 265){ // UP arrow
-                    addThrust();
-                }else if(key == 264){ // DOWN arrow
-                    removeThrust();
+        this.velocity = new Vector2f();
+        this.velocity.limit(2);
+        this.terrain = terrain;
+        this.train = training;
+        if(!train){
+            Keys.registerKeys(SeriousEngine.window.window, (long w, int key, int code, int action, int mods) -> {
+                if(code == 1){
+                    if(key == 265){ // UP arrow
+                        addThrust();
+                    }else if(key == 264){ // DOWN arrow
+                        removeThrust();
+                    }
                 }
-            }
-            if(key == 262){ // LEFT arrow
-                rotateLeft();
-            }else if(key == 263){ // RIGHT arrow
-                rotateRight();
-            }
-        });
-        velocity = new Vector2f();
-        velocity.limit(2);
+                if(key == 262){ // LEFT arrow
+                    rotateLeft();
+                }else if(key == 263){ // RIGHT arrow
+                    rotateRight();
+                }
+            });
+        }
     }
 
     public float getFuel(){
@@ -80,22 +92,31 @@ public class Player extends GuiWidget{
         return velocity;
     }
 
+    public int getThrust(){
+        return thrust;
+    }
+
+    public void setThrust(int thrust){
+        this.thrust = thrust;
+    }
+
     @Override
     public void draw(){
         super.draw();
-        Renderer.drawImageRegion(Image.loadImage("textures/lander" + thrust + ".png"), this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
+        if(!train)
+            Renderer.drawImageRegion(Image.loadImage("textures/lander" + thrust + ".png"), this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
     }
 
     @Override
     public void update(){
         super.update();
-        if(((MainScreen)this.getParent()).getState() == 0){
-            velocity.add(new Vector2f(0, Terrain.gravity));
+        if(train || ((MainScreen)this.getParent()).getState() == 0){
             velocity.add(new Vector2f((float) Math.cos(Math.toRadians(angle)) * thrust / 125f, (float) Math.sin(Math.toRadians(angle)) * thrust / 125f));
+            velocity.add(new Vector2f(0, Terrain.GRAVITY));
             x += velocity.x;
             y += velocity.y;
             fuel -= thrust / 2f + (System.currentTimeMillis() % 15 == 0 ? 1 : 0);
-            System.out.println(String.format("%f, %f, %f, %f, %f", velocity.x, velocity.y, x, y, fuel));
+//            System.out.println(String.format("%f, %f, %f, %f, %f", velocity.x, velocity.y, x, y, fuel));
         }
     }
 }
