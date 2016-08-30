@@ -11,7 +11,7 @@ public class PilotScore implements CalculateScore{
 
     @Override
     public double calculateScore(MLMethod network) {
-        NeuralPilot pilot = new NeuralPilot((BasicNetwork)network);
+        NeuralPilot pilot = new NeuralPilot((BasicNetwork)network, false);
         return pilot.scorePilot();
     }
 
