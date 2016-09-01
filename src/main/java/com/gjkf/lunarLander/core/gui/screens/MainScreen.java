@@ -31,7 +31,7 @@ public class MainScreen extends GuiScreenWidget{
     /**
      * Current terrain object
      */
-    public Terrain terrain;
+    private Terrain terrain;
 
     public MainScreen(float width, float height){
         super(width, height);
@@ -73,7 +73,6 @@ public class MainScreen extends GuiScreenWidget{
     public void update(){
         super.update();
         terrain.checkCollision(player);
-        System.out.println(terrain.getPlayerAltitude(player));
     }
 
     public int getState(){

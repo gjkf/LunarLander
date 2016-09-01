@@ -100,6 +100,14 @@ public class Player extends GuiWidget{
         this.thrust = thrust;
     }
 
+    public void setVelocity(Vector2f velocity){
+        this.velocity = velocity;
+    }
+
+    public void setFuel(float fuel){
+        this.fuel = fuel;
+    }
+
     @Override
     public void draw(){
         super.draw();

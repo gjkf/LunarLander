@@ -17,7 +17,6 @@ public class NeuralPilot {
     private NormalizedField fuelStats;
     private NormalizedField altitudeStats;
     private NormalizedField velocityStats;
-
     public NeuralPilot(BasicNetwork network, boolean track){
         fuelStats = new NormalizedField(NormalizationAction.Normalize, "fuel", 2500, 0, -0.9, 0.9);//200
         altitudeStats = new NormalizedField(NormalizationAction.Normalize, "altitude", TrainScreen.player.terrain.getPlayerAltitude(TrainScreen.player), 0, -0.9, 0.9);//10000
@@ -41,7 +40,6 @@ public class NeuralPilot {
 
 //            System.err.println((int)((value*10)%3));
 
-            boolean thrust;
             int t;
             switch((int)((Math.abs(value)*10) % 3)){
                 case 0:
@@ -60,12 +58,6 @@ public class NeuralPilot {
                     t = 0;
                     break;
             }
-//            if( value > 0 ){
-//                thrust = true;
-//                if( track )
-//                    System.out.println("THRUST");
-//            }else
-//                thrust = false;
 
             if(t != 0 && track)
                 System.out.println("THRUST: " + t);
