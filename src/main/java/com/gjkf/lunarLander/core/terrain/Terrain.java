@@ -6,9 +6,9 @@ package com.gjkf.lunarLander.core.terrain;
 import com.gjkf.lunarLander.core.gui.player.Player;
 import com.gjkf.lunarLander.core.gui.screens.MainScreen;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
-import com.gjkf.seriousEngine.core.math.Vector2f;
 import com.gjkf.seriousEngine.core.render.Colors;
 import com.gjkf.seriousEngine.core.render.Renderer;
+import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;

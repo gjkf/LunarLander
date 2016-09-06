@@ -3,7 +3,6 @@
  */
 package com.gjkf.lunarLander.core.train;
 
-import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.networks.BasicNetwork;
@@ -12,14 +11,16 @@ import org.encog.util.arrayutil.NormalizedField;
 
 public class NeuralPilot {
 
-    private BasicNetwork network;
     private boolean track;
+
+    private BasicNetwork network;
     private NormalizedField fuelStats;
     private NormalizedField altitudeStats;
     private NormalizedField velocityStats;
+
     public NeuralPilot(BasicNetwork network, boolean track){
         fuelStats = new NormalizedField(NormalizationAction.Normalize, "fuel", 2500, 0, -0.9, 0.9);//200
-        altitudeStats = new NormalizedField(NormalizationAction.Normalize, "altitude", TrainScreen.player.terrain.getPlayerAltitude(TrainScreen.player), 0, -0.9, 0.9);//10000
+        altitudeStats = new NormalizedField(NormalizationAction.Normalize, "altitude", 10000, 0, -0.9, 0.9);//10000
         velocityStats = new NormalizedField(NormalizationAction.Normalize, "velocity", LanderSimulator.TERMINAL_VELOCITY, -LanderSimulator.TERMINAL_VELOCITY, -0.9, 0.9);
 
         this.track = track;
@@ -37,8 +38,6 @@ public class NeuralPilot {
             double value = output.getData(0);
 
 //            if(!track) System.out.println(String.format("VEL: %f, ALT: %f, DATA: %f, SCO: %d", sim.getVelocity(),sim.getAltitude(), value, sim.score()));
-
-//            System.err.println((int)((value*10)%3));
 
             int t;
             switch((int)((Math.abs(value)*10) % 3)){
@@ -63,9 +62,11 @@ public class NeuralPilot {
                 System.out.println("THRUST: " + t);
 
             sim.turn(t);
+
             if(track)
                 System.out.println(sim.telemetry());
         }
         return(sim.score());
     }
+
 }

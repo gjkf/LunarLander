@@ -4,46 +4,45 @@
 package com.gjkf.lunarLander.core.train;
 
 import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
-import com.gjkf.lunarLander.core.terrain.Terrain;
-import com.gjkf.seriousEngine.core.math.Vector2f;
 
 import java.text.NumberFormat;
 
 public class LanderSimulator {
 
-    private static final double GRAVITY = Terrain.GRAVITY;// 1.62
+    private static final double GRAVITY = 0.009;// 1.62
     static final double TERMINAL_VELOCITY = 2;//40
 
-    private int fuel;
+    private int fuel, turn;
     private int seconds;
     private double altitude;
-    private Vector2f velocity;
+    private float velocity;
 
     public LanderSimulator() {
         this.fuel = 2500;//200
         this.seconds = 0;
-        this.altitude = TrainScreen.player.terrain.getPlayerAltitude(TrainScreen.player);//10000
-        this.velocity = TrainScreen.player.getVelocity();
+        this.altitude = 10000;//10000
+        this.velocity = 0;
+        this.turn = 0;
     }
 
     public void turn(int thrust){
+        this.turn++;
         this.seconds++;
-        this.velocity.y -= GRAVITY;
-        this.altitude += this.velocity.y;
+        this.velocity -= GRAVITY;
+        this.altitude += this.velocity;
 
         if (thrust > 0 && this.fuel > 0) {
             this.fuel--;
-            this.velocity.y += thrust/125f;
+            this.velocity += thrust/125f;
         }
 
-        this.velocity.y = (float) Math.max(-TERMINAL_VELOCITY, this.velocity.y);
-        this.velocity.y = (float) Math.min(TERMINAL_VELOCITY, this.velocity.y);
+        this.velocity = (float) Math.max(-TERMINAL_VELOCITY, this.velocity);
+        this.velocity = (float) Math.min(TERMINAL_VELOCITY, this.velocity);
 
         if (this.altitude < 0)
             this.altitude = 0;
 
-        TrainScreen.player.setFuel(fuel);
-        TrainScreen.player.setVelocity(velocity);
+        TrainScreen.thread.setTurn(turn);
     }
 
     public String telemetry() {
@@ -55,14 +54,14 @@ public class LanderSimulator {
                 " s, Fuel: " +
                 this.fuel +
                 " l, Velocity: " +
-                nf.format(velocity.y) +
+                nf.format(velocity) +
                 " m/s, " +
                 (int) altitude +
                 " m";
     }
 
     public int score() {
-        return (int) ((this.fuel * 10) + this.seconds + (this.velocity.y * 10000));
+        return (int) ((this.fuel * 10) + this.seconds + (this.velocity * 10000));
     }
 
     public int getFuel() {
@@ -78,10 +77,11 @@ public class LanderSimulator {
     }
 
     public double getVelocity() {
-        return velocity.y;
+        return velocity;
     }
 
     public boolean flying() {
         return (this.altitude > 0);
     }
+
 }

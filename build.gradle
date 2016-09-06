@@ -1,5 +1,5 @@
 group 'com.gjkf'
-version '0.3'
+version '0.4'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -35,7 +35,8 @@ dependencies {
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
-    compile 'org.encog:encog-core:3.4.0-SNAPSHOT'
+    compile "org.encog:encog-core:3.4.0-SNAPSHOT"
+    compile "org.joml:joml:1.8.2"
     /* Include all the jars */
     def allJars = fileTree(dir: 'libraries/', include: '*.jar')
     /* Include just the deobfuscated ones */

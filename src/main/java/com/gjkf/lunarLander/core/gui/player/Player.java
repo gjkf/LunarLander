@@ -8,10 +8,10 @@ import com.gjkf.lunarLander.core.terrain.Terrain;
 import com.gjkf.seriousEngine.SeriousEngine;
 import com.gjkf.seriousEngine.core.controls.Keys;
 import com.gjkf.seriousEngine.core.gui.GuiWidget;
-import com.gjkf.seriousEngine.core.math.Vector2f;
 import com.gjkf.seriousEngine.core.render.Colors;
 import com.gjkf.seriousEngine.core.render.Image;
 import com.gjkf.seriousEngine.core.render.Renderer;
+import org.joml.Vector2f;
 
 public class Player extends GuiWidget{
 
@@ -43,7 +43,6 @@ public class Player extends GuiWidget{
     public Player(float x, float y, float width, float height, Terrain terrain, boolean training){
         super(x, y, width, height, null);
         this.velocity = new Vector2f();
-        this.velocity.limit(2);
         this.terrain = terrain;
         this.train = training;
         if(!train){
@@ -100,7 +99,7 @@ public class Player extends GuiWidget{
         this.thrust = thrust;
     }
 
-    public void setVelocity(Vector2f velocity){
+    public synchronized void setVelocity(Vector2f velocity){
         this.velocity = velocity;
     }
 
@@ -121,6 +120,12 @@ public class Player extends GuiWidget{
         if(train || ((MainScreen)this.getParent()).getState() == 0){
             velocity.add(new Vector2f((float) Math.cos(Math.toRadians(angle)) * thrust / 125f, (float) Math.sin(Math.toRadians(angle)) * thrust / 125f));
             velocity.add(new Vector2f(0, Terrain.GRAVITY));
+
+            velocity.y = Math.max(-2, this.velocity.y);
+            velocity.y = Math.min(2, this.velocity.y);
+            velocity.x = Math.max(-2, this.velocity.y);
+            velocity.x = Math.min(2, this.velocity.y);
+
             x += velocity.x;
             y += velocity.y;
             fuel -= thrust / 2f + (System.currentTimeMillis() % 15 == 0 ? 1 : 0);
