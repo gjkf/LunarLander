@@ -9,11 +9,12 @@ import org.encog.neural.networks.BasicNetwork;
 
 public class PilotScore implements CalculateScore{
 
-    public NeuralPilot pilot;
+    private NeuralPilot pilot = new NeuralPilot(false);
 
     @Override
     public double calculateScore(MLMethod network) {
-        NeuralPilot pilot = new NeuralPilot((BasicNetwork)network, false);
+//        pilot = new NeuralPilot(false);
+        pilot.setNetwork((BasicNetwork) network);
         return pilot.scorePilot();
     }
 

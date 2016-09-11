@@ -7,12 +7,12 @@ import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
 
 import java.text.NumberFormat;
 
-public class LanderSimulator {
+public class LanderSimulator{
 
     private static final double GRAVITY = 0.009;// 1.62
     static final double TERMINAL_VELOCITY = 2;//40
 
-    private int fuel, turn;
+    private int fuel;
     private int seconds;
     private double altitude;
     private float velocity;
@@ -20,13 +20,11 @@ public class LanderSimulator {
     public LanderSimulator() {
         this.fuel = 2500;//200
         this.seconds = 0;
-        this.altitude = 10000;//10000
+        this.altitude = 6000;//10000
         this.velocity = 0;
-        this.turn = 0;
     }
 
     public void turn(int thrust){
-        this.turn++;
         this.seconds++;
         this.velocity -= GRAVITY;
         this.altitude += this.velocity;
@@ -42,7 +40,7 @@ public class LanderSimulator {
         if (this.altitude < 0)
             this.altitude = 0;
 
-        TrainScreen.thread.setTurn(turn);
+        TrainScreen.setState(TrainScreen.State.RENDERING);
     }
 
     public String telemetry() {
