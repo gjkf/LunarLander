@@ -4,34 +4,70 @@
 package com.gjkf.lunarLander.core.train;
 
 import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
+import com.gjkf.lunarLander.core.terrain.Terrain;
 
 import java.text.NumberFormat;
 
+/**
+ * This class represents the simulator that simulates the lander flying
+ */
+
 public class LanderSimulator{
 
-    private static final double GRAVITY = 0.009;// 1.62
-    static final double TERMINAL_VELOCITY = 2;//40
+    /**
+     * The gravity that should apply
+     */
+    private static final double GRAVITY = Terrain.GRAVITY;
+    /**
+     * The terminal velocity of the spaceship
+     */
+    static final double TERMINAL_VELOCITY = 2;
 
+    /**
+     * The current amount of fuel
+     */
     private int fuel;
+    /**
+     * The amount of seconds passed from the beginning of the generation
+     */
     private int seconds;
+    /**
+     * The altitude of the spaceship
+     */
     private double altitude;
+    /**
+     * The current velocity of the spaceship
+     */
     private float velocity;
+    /**
+     * The current thrust power
+     */
+    private int thrust = 0;
 
     public LanderSimulator() {
         this.fuel = 2500;//200
         this.seconds = 0;
-        this.altitude = 6000;//10000
+//        this.altitude = 6000;//10000
+        this.altitude = TrainScreen.getPlayer().terrain.getPlayerAltitude(TrainScreen.getPlayer());
         this.velocity = 0;
     }
+
+    /**
+     * Recalculates the {@link LanderSimulator#velocity}, {@link LanderSimulator#altitude} and {@link LanderSimulator#fuel}
+     * of the current generation
+     *
+     * @param thrust How powerful the thrust is
+     */
 
     public void turn(int thrust){
         this.seconds++;
         this.velocity -= GRAVITY;
         this.altitude += this.velocity;
+        this.thrust = thrust;
 
-        if (thrust > 0 && this.fuel > 0) {
+        if (this.thrust > 0 && this.fuel > 0) {
             this.fuel--;
-            this.velocity += thrust/125f;
+            this.velocity += this.thrust/125f;
         }
 
         this.velocity = (float) Math.max(-TERMINAL_VELOCITY, this.velocity);
@@ -42,6 +78,12 @@ public class LanderSimulator{
 
         TrainScreen.setState(TrainScreen.State.RENDERING);
     }
+
+    /**
+     * Formats all the information in a nice way
+     *
+     * @return The newly formatted string
+     */
 
     public String telemetry() {
         NumberFormat nf = NumberFormat.getNumberInstance();
@@ -57,6 +99,12 @@ public class LanderSimulator{
                 (int) altitude +
                 " m";
     }
+
+    /**
+     * Perhaps the most important method, it calculates the score for the current turn
+     *
+     * @return The current score
+     */
 
     public int score() {
         return (int) ((this.fuel * 10) + this.seconds + (this.velocity * 10000));
@@ -82,4 +130,7 @@ public class LanderSimulator{
         return (this.altitude > 0);
     }
 
+    public int getThrust(){
+        return thrust;
+    }
 }

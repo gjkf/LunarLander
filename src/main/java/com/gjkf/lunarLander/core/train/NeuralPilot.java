@@ -10,16 +10,42 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.arrayutil.NormalizedField;
 
+/**
+ * The pilot that hypothetically should "drive" the Lunar Lander
+ */
 public class NeuralPilot {
 
+    /**
+     * Whether or not this is used to track the operations
+     */
     private boolean track;
 
-    private BasicNetwork network;
-    private NormalizedField fuelStats;
-    private NormalizedField altitudeStats;
-    private NormalizedField velocityStats;
-    private LanderSimulator sim;
+    /**
+     * The current turn
+     */
     private int turn = 0;
+
+    /**
+     * The network to work with
+     */
+    private BasicNetwork network;
+    /**
+     * The fuel stats
+     */
+    private NormalizedField fuelStats;
+    /**
+     * The altitude stats
+     */
+    private NormalizedField altitudeStats;
+    /**
+     * The velocity stats
+     */
+    private NormalizedField velocityStats;
+
+    /**
+     * The {@link LanderSimulator} object
+     */
+    private LanderSimulator sim;
 
     public NeuralPilot(boolean track){
         fuelStats = new NormalizedField(NormalizationAction.Normalize, "fuel", 2500, 0, -0.9, 0.9);//200
@@ -30,9 +56,16 @@ public class NeuralPilot {
         sim = new LanderSimulator();
     }
 
+    /**
+     * Will run the {@link LanderSimulator#turn(int)} method and will return the {@link LanderSimulator#score()}
+     *
+     * @return The current turn score
+     */
+
     public int scorePilot(){
         if(sim.flying()){
             if(!TrainScreen.getState().equals(TrainScreen.State.RENDERING)){
+                // Process the data and create the new value from it
                 MLData input = new BasicMLData(3);
                 input.setData(0, this.fuelStats.normalize(sim.getFuel()));
                 input.setData(1, this.altitudeStats.normalize(sim.getAltitude()));
@@ -42,30 +75,30 @@ public class NeuralPilot {
 
 //            if(!track) System.out.println(String.format("VEL: %f, ALT: %f, DATA: %f, SCO: %d", sim.getVelocity(),sim.getAltitude(), value, sim.score()));
 
-                int t;
+                int thrust;
                 switch((int) ((Math.abs(value) * 10) % 3)){
                     case 0:
-                        t = 0;
+                        thrust = 0;
                         break;
                     case 1:
-                        t = 1;
+                        thrust = 1;
                         break;
                     case 2:
-                        t = 2;
+                        thrust = 2;
                         break;
                     case 3:
-                        t = 3;
+                        thrust = 3;
                         break;
                     default:
-                        t = 0;
+                        thrust = 0;
                         break;
                 }
 
-                if(t != 0 && track)
-                    System.out.println("THRUST: " + t);
+                if(thrust != 0 && track)
+                    System.out.println("THRUST: " + thrust);
 
 
-                sim.turn(t);
+                sim.turn(thrust);
                 turn++;
                 if(track)
                     System.out.println(sim.telemetry());

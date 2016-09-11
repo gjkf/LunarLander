@@ -7,8 +7,15 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 
+/**
+ * The pilot used to determine the ANN score
+ */
+
 public class PilotScore implements CalculateScore{
 
+    /**
+     * The {@link NeuralPilot} object
+     */
     private NeuralPilot pilot = new NeuralPilot(false);
 
     @Override

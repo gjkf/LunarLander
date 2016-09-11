@@ -110,14 +110,13 @@ public class Player extends GuiWidget{
     @Override
     public void draw(){
         super.draw();
-        if(!train)
-            Renderer.drawImageRegion(Image.loadImage("textures/lander" + thrust + ".png"), this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
+        Renderer.drawImageRegion(Image.loadImage("textures/lander" + thrust + ".png"), this.x, this.y, 0, 0, 32, 32, Colors.WHITE.color, 90+this.angle);
     }
 
     @Override
     public void update(){
         super.update();
-        if(train || ((MainScreen)this.getParent()).getState() == 0){
+        if(!train || ((MainScreen)this.getParent()).getState() == 0){
             velocity.add(new Vector2f((float) Math.cos(Math.toRadians(angle)) * thrust / 125f, (float) Math.sin(Math.toRadians(angle)) * thrust / 125f));
             velocity.add(new Vector2f(0, Terrain.GRAVITY));
 
