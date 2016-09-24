@@ -14,7 +14,6 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.neural.pattern.FeedForwardPattern;
-import org.joml.Vector2f;
 
 import static com.gjkf.lunarLander.core.gui.screens.TrainScreen.State.GEN_TRAINING;
 import static com.gjkf.lunarLander.core.gui.screens.TrainScreen.State.TURN_TRAINING;
@@ -29,6 +28,10 @@ public class TrainScreen extends GuiScreenWidget{
      * The current epoch of the neural network generation
      */
     private static int epoch = 0;
+    /**
+     * The player's altitude
+     */
+    private static float altitude = 0;
     /**
      * The current state. {@link State}
      */
@@ -62,6 +65,7 @@ public class TrainScreen extends GuiScreenWidget{
         network = createNetwork();
         train = new NeuralSimulatedAnnealing(network, new PilotScore(), 10, 2, 100);
         pilot = ((PilotScore)((NeuralSimulatedAnnealing)train).getCalculateScore()).getPilot();
+        altitude = player.terrain.getPlayerAltitude(player);
     }
 
     @Override
@@ -70,9 +74,10 @@ public class TrainScreen extends GuiScreenWidget{
         switch(state){
             // If the current state is rendering, then update the player info
             case RENDERING:
-                player.setFuel(pilot.getSimulator().getFuel());
-                player.setThrust(pilot.getSimulator().getThrust());
-                player.setVelocity(new Vector2f(0, (float) pilot.getSimulator().getVelocity()));
+//                player.setFuel(pilot.getSimulator().getFuel());
+//                player.setThrust(pilot.getSimulator().getThrust());
+//                player.setVelocity(new Vector2f(0, (float) pilot.getSimulator().getVelocity()));
+                System.err.println("Altitude: " + pilot.getSimulator().getAltitude() + " ALT: " + player.terrain.getPlayerAltitude(player));
                 player.x += player.getVelocity().x;
                 player.y += player.getVelocity().y;
                 // Then make the state back to TURN_TRAINING
@@ -170,6 +175,10 @@ public class TrainScreen extends GuiScreenWidget{
 
     public static Player getPlayer(){
         return player;
+    }
+
+    public static float getAltitude(){
+        return altitude;
     }
 
     /**

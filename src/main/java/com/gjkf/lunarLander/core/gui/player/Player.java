@@ -122,8 +122,8 @@ public class Player extends GuiWidget{
 
             velocity.y = Math.max(-2, this.velocity.y);
             velocity.y = Math.min(2, this.velocity.y);
-            velocity.x = Math.max(-2, this.velocity.y);
-            velocity.x = Math.min(2, this.velocity.y);
+            velocity.x = Math.max(-2, this.velocity.x);
+            velocity.x = Math.min(2, this.velocity.x);
 
             x += velocity.x;
             y += velocity.y;

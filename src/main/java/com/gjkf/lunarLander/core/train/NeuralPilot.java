@@ -49,7 +49,7 @@ public class NeuralPilot {
 
     public NeuralPilot(boolean track){
         fuelStats = new NormalizedField(NormalizationAction.Normalize, "fuel", 2500, 0, -0.9, 0.9);//200
-        altitudeStats = new NormalizedField(NormalizationAction.Normalize, "altitude", 6000, 0, -0.9, 0.9);//10000
+        altitudeStats = new NormalizedField(NormalizationAction.Normalize, "altitude", TrainScreen.getAltitude(), 0, -0.9, 0.9);//10000
         velocityStats = new NormalizedField(NormalizationAction.Normalize, "velocity", LanderSimulator.TERMINAL_VELOCITY, -LanderSimulator.TERMINAL_VELOCITY, -0.9, 0.9);
 
         this.track = track;

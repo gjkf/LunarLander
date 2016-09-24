@@ -5,6 +5,7 @@ package com.gjkf.lunarLander.core.train;
 
 import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
 import com.gjkf.lunarLander.core.terrain.Terrain;
+import org.joml.Vector2f;
 
 import java.text.NumberFormat;
 
@@ -34,7 +35,7 @@ public class LanderSimulator{
     /**
      * The altitude of the spaceship
      */
-    private double altitude;
+    private float altitude;
     /**
      * The current velocity of the spaceship
      */
@@ -47,8 +48,7 @@ public class LanderSimulator{
     public LanderSimulator() {
         this.fuel = 2500;//200
         this.seconds = 0;
-//        this.altitude = 6000;//10000
-        this.altitude = TrainScreen.getPlayer().terrain.getPlayerAltitude(TrainScreen.getPlayer());
+        this.altitude = TrainScreen.getAltitude();
         this.velocity = 0;
     }
 
@@ -62,7 +62,7 @@ public class LanderSimulator{
     public void turn(int thrust){
         this.seconds++;
         this.velocity -= GRAVITY;
-        this.altitude += this.velocity;
+        this.altitude -= this.velocity;
         this.thrust = thrust;
 
         if (this.thrust > 0 && this.fuel > 0) {
@@ -77,6 +77,9 @@ public class LanderSimulator{
             this.altitude = 0;
 
         TrainScreen.setState(TrainScreen.State.RENDERING);
+        TrainScreen.getPlayer().setFuel(getFuel());
+        TrainScreen.getPlayer().setThrust(getThrust());
+        TrainScreen.getPlayer().setVelocity(new Vector2f(0, (float) getVelocity()));
     }
 
     /**
@@ -118,7 +121,7 @@ public class LanderSimulator{
         return seconds;
     }
 
-    public double getAltitude() {
+    public float getAltitude() {
         return altitude;
     }
 
