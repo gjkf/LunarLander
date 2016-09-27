@@ -7,6 +7,8 @@ import com.gjkf.lunarLander.core.gui.screens.TrainScreen;
 import com.gjkf.lunarLander.core.terrain.Terrain;
 import org.joml.Vector2f;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
@@ -76,10 +78,18 @@ public class LanderSimulator{
         if (this.altitude < 0)
             this.altitude = 0;
 
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+        this.velocity = Float.parseFloat(df.format(this.velocity));
+
+        df = new DecimalFormat("####.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+        this.altitude = Float.parseFloat(df.format(this.altitude));
+
         TrainScreen.setState(TrainScreen.State.RENDERING);
-        TrainScreen.getPlayer().setFuel(getFuel());
-        TrainScreen.getPlayer().setThrust(getThrust());
-        TrainScreen.getPlayer().setVelocity(new Vector2f(0, (float) getVelocity()));
+        TrainScreen.getPlayer().setFuel(this.fuel);
+        TrainScreen.getPlayer().setThrust(this.thrust);
+        TrainScreen.getPlayer().setVelocity(new Vector2f(0, this.velocity));
     }
 
     /**
@@ -125,7 +135,7 @@ public class LanderSimulator{
         return altitude;
     }
 
-    public double getVelocity() {
+    public float getVelocity() {
         return velocity;
     }
 

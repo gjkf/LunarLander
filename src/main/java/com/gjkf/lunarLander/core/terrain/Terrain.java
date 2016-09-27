@@ -11,6 +11,8 @@ import com.gjkf.seriousEngine.core.render.Renderer;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -139,6 +141,9 @@ public class Terrain extends GuiWidget{
     public float getPlayerAltitude(Player player){
         final float[] f = new float[1];
         points.stream().filter(p -> p.x >= player.x && p.x <= player.x + player.width).forEach(p -> f[0] = Math.max(f[0], p.y - player.y));
+        DecimalFormat df = new DecimalFormat("####.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+        f[0]= Float.parseFloat(df.format(f[0]));
         return f[0];
     }
 
