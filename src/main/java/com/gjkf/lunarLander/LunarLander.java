@@ -14,6 +14,7 @@ public class LunarLander{
 
         Window w = new Window(1000, 1000, "Lunar Lander");
         w.setScreen(new TrainScreen(1000, 1000));
+//        w.setScreen(new MenuScreen(1000, 1000));
 
         engine.setWindow(w);
         engine.run();

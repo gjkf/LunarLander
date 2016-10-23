@@ -147,6 +147,23 @@ public class Terrain extends GuiWidget{
         return f[0];
     }
 
+    /**
+     * Returns the distance between the top of th screen and the point where the player is
+     *
+     * @param player The player to check for
+     *
+     * @return The distance between the top of the screen and the point where the player is
+     */
+
+    public float getReal0(Player player){
+        final float[] f = new float[1];
+        points.stream().filter(p -> p.x >= player.x && p.x <= player.x + player.width).forEach(p -> f[0] = Math.max(f[0], player.getParent().height - p.y));
+        DecimalFormat df = new DecimalFormat("####.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+        f[0]= Float.parseFloat(df.format(f[0]));
+        return f[0];
+    }
+
     @Override
     public void draw(){
         super.draw();

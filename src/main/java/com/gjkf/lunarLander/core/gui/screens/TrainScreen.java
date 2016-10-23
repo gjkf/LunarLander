@@ -66,6 +66,7 @@ public class TrainScreen extends GuiScreenWidget{
         train = new NeuralSimulatedAnnealing(network, new PilotScore(), 10, 2, 100);
         pilot = ((PilotScore)((NeuralSimulatedAnnealing)train).getCalculateScore()).getPilot();
         altitude = player.terrain.getPlayerAltitude(player);
+        player.setParent(this);
     }
 
     @Override
@@ -80,13 +81,15 @@ public class TrainScreen extends GuiScreenWidget{
             // If the current state is rendering, then update the player info
             case RENDERING:
                 player.x += player.getVelocity().x;
-                player.y += player.getVelocity().y;
+//                player.y -= player.getVelocity().y;
+                player.y = height-pilot.getSimulator().getAltitude();
                 System.err.println(String.format("V: %f / VEL: %f - ALT: %f / Alt: %f / DIFF: %f",
                         player.getVelocity().y,
                         pilot.getSimulator().getVelocity(),
                         pilot.getSimulator().getAltitude(),
                         player.terrain.getPlayerAltitude(player),
-                        (pilot.getSimulator().getAltitude()-player.terrain.getPlayerAltitude(player))));
+                        (pilot.getSimulator().getAltitude()-(height-player.y))));
+//                System.err.println("Real0: " + player.terrain.getReal0(player));
                 // Then make the state back to TURN_TRAINING
                 state = TURN_TRAINING;
                 break;
