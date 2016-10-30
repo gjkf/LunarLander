@@ -37,6 +37,7 @@ dependencies {
     compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
     compile "org.encog:encog-core:3.4.0-SNAPSHOT"
     compile "org.joml:joml:1.8.2"
+    compile "com.landawn:abacus-util:0.9.25"
     /* Include all the jars */
     def allJars = fileTree(dir: 'libraries/', include: '*.jar')
     /* Include just the deobfuscated ones */
