@@ -1,5 +1,19 @@
-group 'com.gjkf'
-version '0.5'
+import org.gradle.internal.os.OperatingSystem
+
+switch (OperatingSystem.current()) {
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+group 'io.github.gjkf'
+version '0.6'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -17,7 +31,7 @@ sourceSets {
 
 applicationDistribution.exclude("libraries/*")
 
-def lwjglVersion = "3.0.0a"
+def lwjglVersion = "3.1.1"
 
 mainClassName = "com.gjkf.lunarLander.LunarLander"
 
@@ -31,13 +45,24 @@ task wrapper(type: Wrapper) {
 }
 
 dependencies {
+    // LWJGL dependencies START
     compile "org.lwjgl:lwjgl:${lwjglVersion}"
-    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
-    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
-    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+    compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    compile "org.lwjgl:lwjgl-openal:${lwjglVersion}"
+    compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    compile "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+    // LWJGL natives
+    runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}"
+    runtime "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${lwjglNatives}"
+    runtime "org.lwjgl:lwjgl-openal:${lwjglVersion}:${lwjglNatives}"
+    runtime "org.lwjgl:lwjgl-opengl:${lwjglVersion}:${lwjglNatives}"
+    runtime "org.lwjgl:lwjgl-stb:${lwjglVersion}:${lwjglNatives}"
+    // LWJGL dependencies END
+    compile "org.joml:joml:1.9.0"
+    compile "org.l33tlabs.twl:pngdecoder:1.0"
+
     compile "org.encog:encog-core:3.4.0-SNAPSHOT"
-    compile "org.joml:joml:1.8.2"
-    compile "com.landawn:abacus-util:0.9.25"
+
     /* Include all the jars */
     def allJars = fileTree(dir: 'libraries/', include: '*.jar')
     /* Include just the deobfuscated ones */
