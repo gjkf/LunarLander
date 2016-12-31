@@ -46,9 +46,10 @@ public class Lander extends Item{
                 new Material(new Texture("/textures/lander3.png"), 1)
         };
         setIcon(0);
+//        getMesh().setMaterial(new Material(new Texture(new FileInputStream(new File(System.getProperty("user.home"), "lunarTerrain0.png")))));
         angle = 0;
         // I need this because else it would be upside down.
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float)Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
     }
 
     /**
@@ -57,7 +58,7 @@ public class Lander extends Item{
      * @param thrust The thrust power. Cannot be lower than 0 and bigger than 3.
      */
 
-    public void setIcon(int thrust){
+    private void setIcon(int thrust){
         if(thrust >= 4 || thrust < 0)
             return;
         getMesh().setMaterial(icons[thrust]);
@@ -91,7 +92,7 @@ public class Lander extends Item{
 
     public void rotateLeft(int value){
         angle += value;
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float)Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
     }
 
     /**
@@ -102,7 +103,7 @@ public class Lander extends Item{
 
     public void rotateRight(int value){
         angle -= value;
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float)Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
     }
 
 }

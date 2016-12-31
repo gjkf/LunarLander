@@ -63,7 +63,6 @@
 //
 //    public int scorePilot(){
 //        if(sim.flying()){
-//            if(!TrainScreen.getState().equals(TrainScreen.State.RENDERING)){
 //                // Process the data and create the new value from it
 //                MLData input = new BasicMLData(3);
 //                input.setData(0, this.fuelStats.normalize(sim.getFuel()));

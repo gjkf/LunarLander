@@ -14,6 +14,7 @@ import io.github.gjkf.seriousEngine.render.Renderer;
 import io.github.gjkf.seriousEngine.render.Scene;
 import io.github.gjkf.seriousEngine.render.lights.DirectionalLight;
 import io.github.gjkf.seriousEngine.render.lights.SceneLight;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,6 +25,7 @@ public class Game implements ILogic{
 
     private Scene scene;
     private Lander lander;
+    private LunarTerrain terrain;
 
     public Game(){
         this.renderer = new Renderer();
@@ -38,10 +40,16 @@ public class Game implements ILogic{
         setupLights();
 
         lander = new Lander();
-        lander.setPosition(0, -1, -5);
+        lander.setPosition(0, 1, -4);
+        lander.setScale(0.05f);
+
+        terrain = new LunarTerrain(500, 500);
+        terrain.setPosition(0, 0, -5);
+        terrain.setScale(3f);
 
         scene.setItems(new Item[] {
-                lander
+                lander,
+                terrain
         });
     }
 
@@ -79,7 +87,11 @@ public class Game implements ILogic{
 
     @Override
     public void update(float v, MouseInput mouseInput){
-
+//         Update camera based on mouse
+        if(mouseInput.isLeftButtonPressed()){
+            Vector2f rotVec = mouseInput.getDisplVec();
+            camera.moveRotation(rotVec.x * 0.2f, rotVec.y * 0.2f, 0);
+        }
     }
 
     @Override
@@ -91,5 +103,10 @@ public class Game implements ILogic{
     public void cleanup(){
         renderer.cleanup();
         scene.cleanup();
+        try{
+            terrain.deleteImage();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
