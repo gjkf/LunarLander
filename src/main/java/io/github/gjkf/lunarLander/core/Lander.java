@@ -10,6 +10,7 @@ import io.github.gjkf.seriousEngine.render.Material;
 import io.github.gjkf.seriousEngine.render.Texture;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * This is the <tt>Lander</tt> class.
@@ -30,6 +31,10 @@ public class Lander extends Item{
      * The angle in degrees.
      */
     private int angle;
+    /**
+     * The velocity vector.
+     */
+    private Vector3f velocity;
 
     /**
      * Constructs a new Lander.
@@ -39,6 +44,7 @@ public class Lander extends Item{
 
     public Lander() throws Exception{
         super(OBJLoader.loadMesh("/engineModels/quad.obj"));
+        velocity = new Vector3f(0);
         icons = new Material[] {
                 new Material(new Texture("/textures/lander0.png"), 1),
                 new Material(new Texture("/textures/lander1.png"), 1),
@@ -50,6 +56,33 @@ public class Lander extends Item{
         angle = 0;
         // I need this because else it would be upside down.
         setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
+    }
+
+    /**
+     * Updates the velocity and position of the lander.
+     */
+
+    public void update(){
+        float factor = 1000;
+        float Vx = (float) Math.cos(Math.toRadians(-angle)) * thrust / factor;
+        float Vy = (float) Math.sin(Math.toRadians(-angle)) * thrust / (factor * 75);
+        velocity.add(new Vector3f(
+                Vy,
+                Vy,
+                0f)
+        );
+        velocity.add(new Vector3f(0, -LunarTerrain.GRAVITY, 0));
+
+        System.err.println("SIN: " + (float) Math.sin(Math.toRadians(-angle)));
+
+        System.out.printf("X: %f | Y: %f | Z: %f - Vx: %f - Vy: %f ^ Angle: %d\n", velocity.x, velocity.y, velocity.z, Vx, Vy, -angle);
+
+        velocity.y = Math.max(-1e-2f, this.velocity.y);
+        velocity.y = Math.min(1e-2f, this.velocity.y);
+        velocity.x = Math.max(-1e-2f, this.velocity.x);
+        velocity.x = Math.min(1e-2f, this.velocity.x);
+
+        setPosition(getPosition().x + velocity.x, getPosition().y + velocity.y, getPosition().z + velocity.z);
     }
 
     /**

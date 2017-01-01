@@ -8,7 +8,6 @@ import io.github.gjkf.seriousEngine.items.Item;
 import io.github.gjkf.seriousEngine.loaders.obj.OBJLoader;
 import io.github.gjkf.seriousEngine.render.Material;
 import io.github.gjkf.seriousEngine.render.Texture;
-
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -27,7 +26,7 @@ public class LunarTerrain extends Item{
     /**
      * The gravity force to apply to all items.
      */
-    public static final float GRAVITY = 0.01f;
+    public static final float GRAVITY = 1e-5f;
     /**
      * The image file for the texture.
      */
@@ -39,7 +38,11 @@ public class LunarTerrain extends Item{
     /**
      * Vector representing the terrain.
      */
-    private ArrayList<Vector2f> points, validPoints;
+    private ArrayList<Vector2f> points;
+    /**
+     * The valid points where you can land.
+     */
+    private ArrayList<ArrayList<Vector2f>> validPoints;
     /**
      * Whether or not the current terrain is suitable for a game.
      */
@@ -48,7 +51,10 @@ public class LunarTerrain extends Item{
      * The dimension of the terrain.
      */
     private float width, height;
-    private int inc = 5;
+    /**
+     * The step of the generation algorithm.
+     */
+    private int inc = 10;
 
     public LunarTerrain(float width, float height) throws Exception{
         super(OBJLoader.loadMesh("/engineModels/quad.obj"));
@@ -56,6 +62,7 @@ public class LunarTerrain extends Item{
         this.height = height;
         // I use the current nano time so that each time the program is executed I guarantee the most randomness possible.
         random = new Random(System.nanoTime());
+
         generateTerrain(inc);
 
         createTerrainImage(points, validPoints);
@@ -76,7 +83,7 @@ public class LunarTerrain extends Item{
 
         for(float x = 0; x < this.width; x += increase){
             float noise = (float) (random.nextGaussian() * 0.1f);
-            int y = (int) Math.abs(height / 2 + noise * Math.sin(x) * 250);
+            int y = (int) Math.abs(height / 2 + noise * Math.sin(x) * 150);
             points.add(new Vector2f(x, y));
         }
         checkForValidity();
@@ -106,9 +113,12 @@ public class LunarTerrain extends Item{
             }
             // Checks if the first point's y coordinate is the same as the second's one.
             if(c.get(0).y == c.get(1).y){
-                validPoints.add(c.get(0));
-                validPoints.add(c.get(1));
-                isValid = true;
+                ArrayList<Vector2f> temp = new ArrayList<>();
+                temp.add(c.get(0));
+                temp.add(c.get(1));
+                validPoints.add(temp);
+                if(validPoints.size() >= 2)
+                    isValid = true;
             }
             // Updates the place holder.
             ArrayList<Vector2f> t = new ArrayList<>();
@@ -128,45 +138,37 @@ public class LunarTerrain extends Item{
      * @throws IOException If the image could not be created.
      */
 
-    private void createTerrainImage(ArrayList<Vector2f> points, ArrayList<Vector2f> validPoints) throws IOException{
+    private void createTerrainImage(ArrayList<Vector2f> points, ArrayList<ArrayList<Vector2f>> validPoints) throws IOException{
         BufferedImage image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
 
         //Holds the points to draw.
-        ArrayList<Vector2f> c = new ArrayList<>();
+        ArrayList<Vector2f> toDraw = new ArrayList<>();
 
         // White points.
-        for(Vector2f v : points){
+        g.setColor(Color.WHITE);
+        for(Vector2f p : points){
             // We need 2 points to compare them.
-            if(c.size() < 2){
-                c.add(v);
+            if(toDraw.size() < 2){
+                toDraw.add(p);
                 continue;
             }
             // Let's draw, shall we?
-            g.setColor(Color.WHITE);
-            g.drawLine((int) c.get(0).x, (int) c.get(0).y, (int) c.get(1).x, (int) c.get(1).y);
+            g.drawLine((int) toDraw.get(0).x, (int) toDraw.get(0).y, (int) toDraw.get(1).x, (int) toDraw.get(1).y);
             // Updates the place holder.
             ArrayList<Vector2f> t = new ArrayList<>();
-            t.add(c.get(1));
-            c = t;
+            t.add(toDraw.get(1));
+            toDraw = t;
         }
 
-        c.clear();
         // Red points
-        for(Vector2f v : validPoints){
-            // We need 2 points to compare them.
-            if(c.size() < 2){
-                c.add(v);
-                continue;
-            }
-            System.err.println(v.x + " | " + v.y);
+        g.setColor(Color.RED);
+        for(ArrayList<Vector2f> p : validPoints){
+            Vector2f first = p.get(0);
+            Vector2f second = p.get(1);
+
             // Let's draw, shall we?
-            g.setColor(Color.RED);
-            g.drawLine((int) c.get(0).x, (int) c.get(0).y, (int) c.get(1).x, (int) c.get(1).y);
-            // Updates the place holder.
-            ArrayList<Vector2f> t = new ArrayList<>();
-            t.add(c.get(1));
-            c = t;
+            g.drawLine((int) first.x, (int) first.y, (int) second.x, (int) second.y);
         }
         // Creates the image.
         ImageIO.write(image, "png", imageOutput);

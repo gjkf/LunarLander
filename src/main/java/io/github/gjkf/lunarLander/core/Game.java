@@ -43,8 +43,8 @@ public class Game implements ILogic{
         lander.setPosition(0, 1, -4);
         lander.setScale(0.05f);
 
-        terrain = new LunarTerrain(500, 500);
-        terrain.setPosition(0, 0, -5);
+        terrain = new LunarTerrain(1000, 1000);
+        terrain.setPosition(-.1f, 0, -5);
         terrain.setScale(3f);
 
         scene.setItems(new Item[] {
@@ -86,12 +86,13 @@ public class Game implements ILogic{
     }
 
     @Override
-    public void update(float v, MouseInput mouseInput){
+    public void update(float interval, MouseInput mouseInput){
 //         Update camera based on mouse
         if(mouseInput.isLeftButtonPressed()){
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * 0.2f, rotVec.y * 0.2f, 0);
         }
+        lander.update();
     }
 
     @Override
