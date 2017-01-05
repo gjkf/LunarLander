@@ -52,10 +52,9 @@ public class Lander extends Item{
                 new Material(new Texture("/textures/lander3.png"), 1)
         };
         setIcon(0);
-//        getMesh().setMaterial(new Material(new Texture(new FileInputStream(new File(System.getProperty("user.home"), "lunarTerrain0.png")))));
-        angle = 0;
+        angle = -90;
         // I need this because else it would be upside down.
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(270 + angle))));
     }
 
     /**
@@ -63,24 +62,20 @@ public class Lander extends Item{
      */
 
     public void update(){
-        float factor = 1000;
-        float Vx = (float) Math.cos(Math.toRadians(-angle)) * thrust / factor;
-        float Vy = (float) Math.sin(Math.toRadians(-angle)) * thrust / (factor * 75);
+        float factor = 500;
+        float Vx = (float) -Math.cos(Math.toRadians(angle)) * thrust / (factor * 75f);
+        float Vy = (float) Math.sin(Math.toRadians(-angle)) * thrust / (factor * 75f);
         velocity.add(new Vector3f(
+                Vx,
                 Vy,
-                Vy,
-                0f)
-        );
+                0f
+        ));
         velocity.add(new Vector3f(0, -LunarTerrain.GRAVITY, 0));
 
-        System.err.println("SIN: " + (float) Math.sin(Math.toRadians(-angle)));
-
-        System.out.printf("X: %f | Y: %f | Z: %f - Vx: %f - Vy: %f ^ Angle: %d\n", velocity.x, velocity.y, velocity.z, Vx, Vy, -angle);
-
-        velocity.y = Math.max(-1e-2f, this.velocity.y);
-        velocity.y = Math.min(1e-2f, this.velocity.y);
-        velocity.x = Math.max(-1e-2f, this.velocity.x);
-        velocity.x = Math.min(1e-2f, this.velocity.x);
+        velocity.y = Math.max(-5e-2f, this.velocity.y);
+        velocity.y = Math.min(5e-2f, this.velocity.y);
+        velocity.x = Math.max(-5e-2f, this.velocity.x);
+        velocity.x = Math.min(5e-2f, this.velocity.x);
 
         setPosition(getPosition().x + velocity.x, getPosition().y + velocity.y, getPosition().z + velocity.z);
     }
@@ -125,7 +120,7 @@ public class Lander extends Item{
 
     public void rotateLeft(int value){
         angle += value;
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(270 + angle))));
     }
 
     /**
@@ -136,7 +131,7 @@ public class Lander extends Item{
 
     public void rotateRight(int value){
         angle -= value;
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180 + angle))));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(270 + angle))));
     }
 
 }

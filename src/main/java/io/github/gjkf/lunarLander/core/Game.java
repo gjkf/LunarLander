@@ -14,9 +14,11 @@ import io.github.gjkf.seriousEngine.render.Renderer;
 import io.github.gjkf.seriousEngine.render.Scene;
 import io.github.gjkf.seriousEngine.render.lights.DirectionalLight;
 import io.github.gjkf.seriousEngine.render.lights.SceneLight;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements ILogic{
 
@@ -27,9 +29,12 @@ public class Game implements ILogic{
     private Lander lander;
     private LunarTerrain terrain;
 
+    private final Vector3f cameraInc;
+
     public Game(){
         this.renderer = new Renderer();
         camera = new Camera();
+        cameraInc = new Vector3f();
     }
 
     @Override
@@ -40,11 +45,11 @@ public class Game implements ILogic{
         setupLights();
 
         lander = new Lander();
-        lander.setPosition(0, 1, -4);
+        lander.setPosition(0, 1, -3.5f);
         lander.setScale(0.05f);
 
         terrain = new LunarTerrain(1000, 1000);
-        terrain.setPosition(-.1f, 0, -5);
+        terrain.setPosition(-.1f, 0, -4);
         terrain.setScale(3f);
 
         scene.setItems(new Item[] {
@@ -72,27 +77,49 @@ public class Game implements ILogic{
 
     @Override
     public void input(Window window, MouseInput mouseInput){
-        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
+        if(window.isKeyPressed(GLFW_KEY_UP)){
             lander.increaseThrust();
-        }else if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN)){
+        }else if(window.isKeyPressed(GLFW_KEY_DOWN)){
             lander.reduceThrust();
         }
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
+        if(window.isKeyPressed(GLFW_KEY_LEFT)){
             lander.rotateLeft(1);
-        }else if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT)){
+        }else if(window.isKeyPressed(GLFW_KEY_RIGHT)){
             lander.rotateRight(1);
+        }
+
+        // DEBUG
+        cameraInc.set(0, 0, 0);
+        if(window.isKeyPressed(GLFW_KEY_W)){
+            cameraInc.z = -1;
+        }else if(window.isKeyPressed(GLFW_KEY_S)){
+            cameraInc.z = 1;
+        }
+        if(window.isKeyPressed(GLFW_KEY_A)){
+            cameraInc.x = -1;
+        }else if(window.isKeyPressed(GLFW_KEY_D)){
+            cameraInc.x = 1;
+        }
+        if(window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)){
+            cameraInc.y = -1;
+        }else if(window.isKeyPressed(GLFW_KEY_SPACE)){
+            cameraInc.y = 1;
         }
     }
 
     @Override
     public void update(float interval, MouseInput mouseInput){
-//         Update camera based on mouse
+        // Update camera based on mouse
         if(mouseInput.isLeftButtonPressed()){
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * 0.2f, rotVec.y * 0.2f, 0);
         }
+        // Update camera position
+        camera.movePosition(cameraInc.x * 0.1f, cameraInc.y * 0.1f, cameraInc.z * 0.1f);
+
         lander.update();
+        terrain.checkCollisionWith(lander);
     }
 
     @Override

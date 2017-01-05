@@ -11,6 +11,7 @@ import io.github.gjkf.seriousEngine.render.Texture;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,7 +27,7 @@ public class LunarTerrain extends Item{
     /**
      * The gravity force to apply to all items.
      */
-    public static final float GRAVITY = 1e-5f;
+    public static final float GRAVITY = 1e-6f;
     /**
      * The image file for the texture.
      */
@@ -57,7 +58,7 @@ public class LunarTerrain extends Item{
     private int inc = 10;
 
     public LunarTerrain(float width, float height) throws Exception{
-        super(OBJLoader.loadMesh("/engineModels/quad.obj"));
+        super(OBJLoader.loadMesh("/engineModels/plane.obj"));
         this.width = width;
         this.height = height;
         // I use the current nano time so that each time the program is executed I guarantee the most randomness possible.
@@ -68,7 +69,8 @@ public class LunarTerrain extends Item{
         createTerrainImage(points, validPoints);
 
         getMesh().setMaterial(new Material(new Texture(new FileInputStream(imageOutput)), 1));
-        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ(0, 0, (float) Math.toRadians(180))));
+//        getMesh().setMaterial(new Material(new Texture("/textures/terrain.png"), 1));
+        setRotation(new Quaternionf().setFromUnnormalized(new Matrix3f().rotateXYZ((float) Math.toRadians(-90), 0, (float) Math.toRadians(180))));
     }
 
     /**
@@ -182,4 +184,64 @@ public class LunarTerrain extends Item{
         imageOutput.delete();
     }
 
+    @Override
+    public boolean checkCollisionWith(Item item){
+        boolean inside = hasItemInside(item);
+        return inside;
+    }
+
+    /**
+     * Checks if inside the XY coordinates of the terrain there's an item.
+     *
+     * @param item The item to check.
+     *
+     * @return Whether or not it intersects.
+     */
+
+    private boolean hasItemInside(Item item){
+        if(item.equals(this)){
+            return true;
+        }
+        boolean collidedX = false, collidedY = false;
+
+        Vector3f thisPosition = new Vector3f(
+                getPosition().x * getScale(),
+                getPosition().y * getScale(),
+                getPosition().z * getScale()
+        );
+
+        Vector3f itemPosition = new Vector3f(
+                item.getPosition().x * item.getScale(),
+                item.getPosition().y * item.getScale(),
+                item.getPosition().z * item.getScale()
+        );
+
+        Vector2f thisXBounds = new Vector2f(thisPosition.x - getScale(), thisPosition.x + getScale());
+        Vector2f thisYBounds = new Vector2f(thisPosition.y - getScale(), thisPosition.y + getScale());
+
+        Vector2f itemXBounds = new Vector2f(itemPosition.x - item.getScale(), itemPosition.x + item.getScale());
+        Vector2f itemYBounds = new Vector2f(itemPosition.y - item.getScale(), itemPosition.y + item.getScale());
+
+        if(itemPosition.x < thisPosition.x){
+            if(itemXBounds.y >= thisXBounds.x){
+                collidedX = true;
+            }
+        }else{
+            if(itemXBounds.x <= thisXBounds.y){
+                collidedX = true;
+            }
+        }
+
+        if(itemPosition.y < thisPosition.y){
+            if(itemYBounds.y >= thisYBounds.x){
+                collidedY = true;
+            }
+        }else{
+            if(itemYBounds.x <= thisYBounds.y){
+                collidedY = true;
+            }
+        }
+
+        return collidedX && collidedY;
+    }
 }
